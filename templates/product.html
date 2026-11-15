@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}{{ group.name }}{% endblock %}
+
+{% block content %}
+<div class="breadcrumbs">
+    <a href="/">Главная</a> / 
+    {% if breadcrumb %}
+        <a href="/category/{{ group.category_id }}">{{ breadcrumb }}</a> / 
+    {% endif %}
+    <span>{{ group.name }}</span>
+</div>
+
+<div class="product-page">
+    <div class="product-top">
+        <!-- НОВАЯ ГАЛЕРЕЯ (БЕЗ SWIPER) -->
+        <div class="product-gallery">
+            <!-- Главная большая картинка -->
+            <div class="main-image-container">
+                <img id="main-image" src="" alt="{{ group.name }}" referrerpolicy="no-referrer">
+            </div>
+            <!-- Сетка превьюшек -->
+            <div class="thumbnails-grid" id="thumbnails-grid">
+                <!-- JS вставит сюда -->
+            </div>
+        </div>
+
+        <!-- ИНФО -->
+        <div class="product-info-block">
+            <h1>{{ group.name }}</h1>
+            
+            {% if tags %}
+            <div class="tags">
+                {% for tag in tags %}
+                    <span class="tag">{{ tag.name }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="price-block">
+                <div class="current-price" id="current-price">...</div>
+                <div class="availability" id="current-avail">...</div>
+            </div>
+
+            <div class="variants" id="variants-container"></div>
+
+            <button class="btn-add-to-cart">Добавить в корзину</button>
+
+            <h3>Характеристики</h3>
+            <table class="specs-table" id="specs-table"></table>
+        </div>
+    </div>
+
+    <div class="product-bom" id="bom-section" style="display: none;">
+        <h2>Состав комплекта</h2>
+        <div class="bom-grid" id="bom-container"></div>
+    </div>
+
+    <!-- Этот товар входит в комплект -->
+    {% if parent_kits %}
+    <div class="product-bom">
+        <h2>Этот товар входит в комплект</h2>
+        <div class="bom-grid">
+            {% for kit in parent_kits %}
+            <a href="/product/{{ kit.group_id }}?offer_id={{ kit.bundle_offer_id }}" class="bom-card">
+                <div class="bom-img">
+                    {% if kit.picture %}
+                        <img src="/proxy_image?url={{ kit.picture }}" referrerpolicy="no-referrer">
+                    {% else %}
+                        <div class="no-image">Нет фото</div>
+                    {% endif %}
+                </div>
+                <div class="bom-info">
+                    <div class="bom-name" style="font-weight: bold; margin-bottom: 5px;">{{ kit.name }}</div>
+                    {% if kit.variation_name %}
+                        <div class="bom-variation" style="font-size: 13px; color: #666;">
+                            {{ kit.variation_name }}
+                        </div>
+                    {% else %}
+                        <div class="bom-variation" style="font-size: 13px; color: #666;">
+                            Вариация товара
+                        </div>
+                    {% endif %}
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="product-extra">
+        {% if manufacturer %}
+        <div class="extra-block">
+            <h3>Производитель: {{ manufacturer.name }}</h3>
+            {% if manufacturer.description %}
+                <p>{{ manufacturer.description }}</p>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if instructions %}
+        <div class="extra-block">
+            <h3>Инструкции</h3>
+            <ul class="instructions-list">
+                {% for inst in instructions %}
+                    <li><a href="{{ inst.url }}" target="_blank">📄 {{ inst.name }} ({{ inst.size }})</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <div class="extra-block description">
+            <h3>Описание</h3>
+            {{ group.description | safe }}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const PRODUCT_DATA = {{ data_json | safe }};
+</script>
+<script src="{{ url_for('static', filename='js/product.js') }}"></script>
+{% endblock %}

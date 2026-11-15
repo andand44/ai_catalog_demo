@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}{{ current_cat or "Каталог" }}{% endblock %}
+
+{% block content %}
+<div class="layout">
+    <aside class="sidebar">
+        <h3>Каталог</h3>
+        <ul class="cat-list">
+            {% for cat in categories %}
+                <li>
+                    <a href="/category/{{ cat.id }}">{{ cat.name }}</a>
+                    {% if cat.children %}
+                        <ul>
+                            {% for sub in cat.children %}
+                                <li><a href="/category/{{ sub.id }}">{{ sub.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </aside>
+
+    <div class="content">
+        <h1>{{ current_cat or "Все товары" }}</h1>
+        <div class="product-grid">
+            {% for p in products %}
+                <div class="product-card">
+                    <a href="/product/{{ p.group_id }}">
+                        {% if p.picture %}
+                            <img src="{{ p.picture }}" alt="{{ p.name }}" referrerpolicy="no-referrer">
+                        {% else %}
+                            <div class="no-image">Нет фото</div>
+                        {% endif %}
+                        <div class="product-info">
+                            <h4>{{ p.name }}</h4>
+                            {% if p.price %}
+                                <div class="price">{{ p.price }} ₽</div>
+                            {% endif %}
+                        </div>
+                    </a>
+                </div>
+            {% else %}
+                <p>Товаров не найдено.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

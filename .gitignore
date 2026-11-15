@@ -1,0 +1,15 @@
+# Игнорируем виртуальное окружение и кэш
+.venv/
+__pycache__/
+*.pyc
+
+# Игнорируем РЕАЛЬНУЮ базу, фид и боевые парсеры
+catalog.db
+feed_opt_ekb.xml
+master_parser.py
+parse_xml.py
+reset_db.py
+init_db.py
+
+# Игнорируем временные файлы
+*.log
